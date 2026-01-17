@@ -75,7 +75,7 @@ ok   go-reloaded/texttools/transform
 Usage
 
 Run the program with an input and an output file: 
-go run ./texttools sample.txt results.txt
+go run .  sample.txt results.txt
 
 Requirements
 
