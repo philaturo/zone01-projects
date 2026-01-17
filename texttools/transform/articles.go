@@ -8,12 +8,38 @@ import (
 
 func ApplyArticles(tokens []tokenizer.Token) []tokenizer.Token {
 	for i := 0; i < len(tokens)-1; i++ {
-		if tokens[i].Type == tokenizer.Word && strings.ToLower(tokens[i].Value) == "a" &&
-			tokens[i+1].Type == tokenizer.Word {
-			first := strings.ToLower(tokens[i+1].Value[:1])
-			if strings.ContainsAny(first, "aeiouh") {
-				tokens[i].Value = "an"
-			}
+		tok := tokens[i]
+
+		if tok.Type != tokenizer.Word {
+			continue
+		}
+
+		word := strings.ToLower(tok.Value)
+		if word != "a" && word != "an" {
+			continue
+		}
+
+		j := i + 1
+		for j < len(tokens) && tokens[j].Type != tokenizer.Word {
+			j++
+		}
+		if j >= len(tokens) {
+			continue
+		}
+
+		next := strings.ToLower(tokens[j].Value)
+		if len(next) == 0 {
+			continue
+		}
+
+		start := next[0]
+		isVowel := strings.ContainsRune("aeiou", rune(start))
+
+		if isVowel && word == "a" {
+			tokens[i].Value = "an"
+		}
+		if !isVowel && word == "an" {
+			tokens[i].Value = "a"
 		}
 	}
 	return tokens
